@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>jQuery UI Draggable - Default functionality</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <style>
+        #draggable { width: 100px; height: 100px; padding: 0.5em; }
+        .door {
+            border: solid 1px;
+            height: 300px;
+            width: 40%;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script>
+        $( function() {
+            $( "#draggable" ).draggable(
+                // {
+                //     containment: ".door",
+                //     stop: function( event, ui ) {
+                //         $(this).css("left",parseInt($(this).css("left")) / ($(".door").width() / 100)+"%");
+                //         $(this).css("top",parseInt($(this).css("top")) / ($(".door").height() / 100)+"%");
+                //     }
+                // }
+            );
+        } );
+    </script>
+</head>
+<body>
+
+<div class="door"></div>
+
+<div id="draggable" class="ui-widget-content">
+    <p>Drag me around</p>
+</div>
+
+
+</body>
+</html>
