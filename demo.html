@@ -7,26 +7,45 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <style>
-        .diag {
-            border: 1px solid #00FF7F;
-            position: absolute;
-            display: inline-block;
-            overflow: hidden;
+        #draggable {
+            width: 15px;
+            height: 15px;
+            padding: 0.5em;
+            background: indianred;
+            cursor: move;
         }
-
-        .diag img {
-            width: 100%;
-            height: 100%;
+        .door-wrapper {
+            max-width: 900px;
+            max-height: 300px;
+            min-height: 40%;
+            min-width: 60%;
         }
-
-        #draggable { width: 20px; height: 20px; padding: 0.5em; background: indianred }
         .door {
             border: solid 1px;
-            min-height: 300px;
-            height: 40%;
-            width: 70%;
             background: #2196F3;
+            position: relative;
+            /*padding-top: calc(1 / 2 * 100% );*/
+            /*overflow: hidden;*/
+            /*height: calc(1 / 2 * 100% );*/
+            aspect-ratio: 2/1;
         }
+
+        .door img {
+            max-width: 100%;
+            height: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .isme {
+            display: flex;
+            justify-content: space-around;
+            justify-content: space-between;
+        }
+
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
@@ -34,71 +53,53 @@
         var loadFile = function(event) {
             var image = document.getElementById('output');
             image.src = URL.createObjectURL(event.target.files[0]);
+            console.log('files', event.target.files[0])
         }
         $( function() {
             $("#draggable").draggable({
                 containment: '.door',
-                stop: function(e, ui) {
+                stop: function (e, ui) {
                     var perc = ui.position.left / ui.helper.parent().width() * 100;
-                    var pert = (ui.helper.parent().height() + ui.position.top) / ui.helper.parent().height() * 100;
+                    var pert = Math.abs(ui.position.top) / ui.helper.parent().height() * 100;
+                    // var perc = ui.position.left / $('.door').width() * 100;
+                    // var pert = Math.abs(ui.position.top) / $('.door').height() * 100;
 
-                    // console.log('height', ui.helper.parent().height())
-                    // console.log('bottom', ui.position)
-                    // console.log('c', (ui.helper.parent().height() + ui.position.top) / ui.helper.parent().height())
-                    // console.log('pert', pert)
+                    // console.log('ui.position', ui.position.top)
+                    // console.log('ui.helper.parent()', ui.helper.parent())
+                    //
+                    // console.log('parent height', ui.helper.parent().height())
+                    // console.log('parent height', $('.door').height())
+                    //
+                    // console.log('parent width', ui.helper.parent().width())
+                    // console.log('parent width', $('.door').width())
+
+
+                    console.log('pert', pert)
+
+                    ui.helper.css('position', 'absolute');
                     ui.helper.css('left', perc + '%');
                     ui.helper.css('top', pert + '%');
                 }
-            });
-
-            //
-            var isDraggingMedia;
-            $(".diag").css({
-                width: Math.round($(window).width() * 0.26) + "px",
-                height: Math.round($(window).height() * 0.26) + "px",
-                top: Math.round($(window).height() * 0.20) + "px",
-                left: Math.round($(window).width() * 0.20) + "px"
-            });
-            $(".diag").resizable();
-            $(".diag").draggable({
-                appendTo: 'body',
-                start: function(event, ui) {
-                    isDraggingMedia = true;
-                },
-                stop: function(event, ui) {
-                    isDraggingMedia = false;
-                }
-            });
-            $(window).resize(function() {
-                console.log("Window Width:", $(window).width(), "Height:", $(window).height());
-                var dW = Math.round($(window).width() * 0.26);
-                var dH = Math.round($(window).height() * 0.26);
-                var dL = Math.round($(window).width() * 0.20);
-                var dT = Math.round($(window).height() * 0.20);
-                console.log("Dialog Width:", dW, "Height:", dH);
-                $(".diag").css({
-                    width: dW + "px",
-                    height: dH + "px",
-                    top: dT + "px",
-                    left: dL + "px"
-                }).trigger("resize");
             })
-        } );
+
+
+
+            $(window).resize(function() {
+                $reveal.css('left', $(".featured").width()+'px')
+            });
+        })
     </script>
 </head>
 <body>
 <p><input type="file"  accept="image/*" name="image" id="file"  onchange="loadFile(event)" style="display: none;"></p>
 <p><label for="file" style="cursor: pointer; border: solid 1px; padding: 5px">Upload Image</label></p>
-<div class="door">
-    <img id="output" usemap="#mymap" style="width: 100%; height: 100%"/>
+<div class="isme">
+    <div class="door-wrapper">
+        <div class="door">
+            <img id="output" usemap="#mymap"/>
+            <div id="draggable" class="ui-widget-content" />
+        </div>
+    </div>
 </div>
-
-<div id="draggable" class="ui-widget-content">
-</div>
-
-<div class="diag">
-    <img src="https://www.clipartkid.com/images/68/baby-toys-jpg-19-feb-2010-10-37-50k-FSIRmi-clipart.jpg" />
-</div>
-
 </body>
 </html>
