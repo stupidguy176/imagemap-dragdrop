@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>jQuery UI Draggable - Default functionality</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <style>
+        .col{float:left;margin:5px;padding:5px;}
+        #col1{width:200px;height:auto;border:1px solid black;}
+        img.drag{width:40px;height:40px;position:relative; background: red}
+        #droppable{width:350px;height:340px;border:1px solid black;}
+        .right{float:right;}
+        .left{float:left;}
+        .clear{clear:both;}
+        ul li{list-style:none;}
+        .drag-list img{width:80px;vertical-align:middle;cursor:move;}
+        .drag-list ul{margin:0;padding:0;}
+        .drag-list li{margin-bottom:5px;}
+        .remove-drag-hover{background-color:#ED4949!important;}
+        .drop-area{background-color:#afd1b2;}
+        .xicon{margin-top:4px;position:absolute;margin-left:-17px;color:#FFF;font:message-box;text-decoration:none;}
+        .xicon:hover{background-color:#fff;color:#000;width:13px;height:20px;text-align:center;}
+        .tip{font-size:12px;clear:both;}
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script>
+
+
+        ///////////////////
+        var loadFile = function(event) {
+            var image = document.getElementById('output');
+            image.src = URL.createObjectURL(event.target.files[0]);
+            console.log('files', event.target.files[0])
+        }
+        $( function() {
+            var x = null;
+//Make element draggable
+            $(".drag").draggable({
+                helper: 'clone',
+                cursor: 'move',
+                tolerance: 'fit',
+                revert: true
+            });
+
+            $("#droppable").droppable({
+                accept: '.drag',
+                activeClass: "drop-area",
+                drop: function (e, ui) {
+                    if ($(ui.draggable)[0].id != "") {
+
+
+                        x = ui.helper.clone();
+                        ui.helper.remove();
+                        x.draggable({
+                            helper: 'original',
+                            cursor: 'move',
+                            //containment: '#droppable',
+                            tolerance: 'fit',
+                            drop: function (event, ui) {
+                                $(ui.draggable).remove();
+                            }
+                        });
+                    }
+                }
+            });
+
+            $("#remove-drag").droppable({
+                drop: function (event, ui) {
+                    $(ui.draggable).remove();
+                },
+                hoverClass: "remove-drag-hover",
+                accept: '.remove'
+            });
+        })
+    </script>
+</head>
+<body>
+<p><input type="file"  accept="image/*" name="image" id="file"  onchange="loadFile(event)" style="display: none;"></p>
+<p><label for="file" style="cursor: pointer; border: solid 1px; padding: 5px">Upload Image</label></p>
+<div class="isme">
+    <div class="door-wrapper">
+        <div class="door" id="#droppable">
+            <img id="output" usemap="#mymap"/>
+        </div>
+    </div>
+    <div id="wrapper">
+        <div class="col" id="droppable"></div>
+        <div class="col" id="col1">
+            <div id="drag-list" class="drag-list">
+                <ul>
+                    <li><span id="drag1" class="drag" style="width: 30px;height: 30px; background: red">
+                        <img src="" width="100%" height="100%" />
+                    </span><span>Item 1</span>
+                    </li>
+                    <li><span id="drag2" class="drag" style="width: 30px;height: 30px; background: red">
+                        <img src="" width="100%" height="100%" />
+                    </span><span>Item 2</span>
+                    </li>
+                    <li><span id="drag3" class="drag" style="width: 30px;height: 30px; background: red">
+                        <img src="" width="100%" height="100%" />
+                    </span><span>Item 3</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -17,9 +17,47 @@
             top: 15px;
             right: 15px;
         }
+        #drag1 {
+            width: 15px;
+            height: 15px;
+            padding: 0.5em;
+            background: indianred;
+            cursor: move;
+            position: absolute;
+            top: 60px;
+            right: 15px;
+        }
+        #drag2 {
+            width: 15px;
+            height: 15px;
+            padding: 0.5em;
+            background: indianred;
+            cursor: move;
+            position: absolute;
+            top: 105px;
+            right: 15px;
+        }
+        #drag3 {
+            width: 15px;
+            height: 15px;
+            padding: 0.5em;
+            background: indianred;
+            cursor: move;
+            position: absolute;
+            top: 150px;
+            right: 15px;
+        }
+        #drag4 {
+            width: 15px;
+            height: 15px;
+            padding: 0.5em;
+            background: indianred;
+            cursor: move;
+            position: absolute;
+            top: 195px;
+            right: 15px;
+        }
         .door-wrapper {
-            max-width: 900px;
-            max-height: 300px;
             min-height: 40%;
             min-width: 60%;
         }
@@ -31,10 +69,12 @@
             /*overflow: hidden;*/
             /*height: calc(1 / 2 * 100% );*/
             aspect-ratio: 2/1;
+            overflow: hidden;
+            z-index: 1;
         }
 
         .door img {
-            max-width: calc(100% - 100px);
+            max-width: 100%;
             height: auto;
             position: absolute;
             top: 0;
@@ -45,16 +85,16 @@
 
         .isme {
             display: flex;
-            justify-content: space-around;
-            justify-content: space-between;
         }
 
         .meme {
+            position: relative;
             width: 100px;
             background: black;
-            height: 100%;
-            float: right;
+            z-index: 1;
         }
+
+        .drag { z-index:  2}
 
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
@@ -65,37 +105,36 @@
             image.src = URL.createObjectURL(event.target.files[0]);
             console.log('files', event.target.files[0])
         }
+        var currentParent;
         $( function() {
-            $("#draggable").draggable({
-                containment: '.door',
-                stop: function (e, ui) {
-                    var perc = ui.position.left / ui.helper.parent().width() * 100;
-                    var pert = Math.abs(ui.position.top) / ui.helper.parent().height() * 100;
-                    // var perc = ui.position.left / $('.door').width() * 100;
-                    // var pert = Math.abs(ui.position.top) / $('.door').height() * 100;
-
-                    // console.log('ui.position', ui.position.top)
-                    // console.log('ui.helper.parent()', ui.helper.parent())
-                    //
-                    // console.log('parent height', ui.helper.parent().height())
-                    // console.log('parent height', $('.door').height())
-                    //
-                    // console.log('parent width', ui.helper.parent().width())
-                    // console.log('parent width', $('.door').width())
-
-
-                    console.log('pert', pert)
-
-                    ui.helper.css('position', 'absolute');
-                    ui.helper.css('left', perc + '%');
-                    ui.helper.css('top', pert + '%');
+            $(".drag").draggable({
+                revert: 'invalid',
+                start: function(){
+                    currentParent = $(this).parent().attr('id');
                 }
-            })
+            });
 
-
-
-            $(window).resize(function() {
-                $reveal.css('left', $(".featured").width()+'px')
+            $('#doorMe, #dragMe').droppable({
+                accept:'.drag',
+                tolerance: 'fit',
+                drop: function(e,ui){
+                    var targetZone = $(this).attr('id')
+                    if (currentParent != targetZone){
+                        $(ui.draggable).appendTo($(this)).removeAttr('style');
+                        if(targetZone === 'doorMe') {
+                            var perc = 100 - (Math.abs(ui.position.left) / $(`#${targetZone}`).width() * 100);
+                            var pert = Math.abs(ui.position.top) / $(`#${targetZone}`).height() * 100;
+                            ui.helper.css('left', perc + '%');
+                            ui.helper.css('top', pert + '%');
+                        }
+                    } else {
+                        var perc = Math.abs(ui.position.left) / ui.helper.parent().width() * 100;
+                        var pert = Math.abs(ui.position.top) / ui.helper.parent().height() * 100;
+                        ui.helper.css('position', 'absolute');
+                        ui.helper.css('left', perc + '%');
+                        ui.helper.css('top', pert + '%');
+                    }
+                }
             });
         })
     </script>
@@ -105,11 +144,16 @@
 <p><label for="file" style="cursor: pointer; border: solid 1px; padding: 5px">Upload Image</label></p>
 <div class="isme">
     <div class="door-wrapper">
-        <div class="door">
+        <div class="door" id="doorMe">
             <img id="output" usemap="#mymap"/>
-            <div id="draggable" class="ui-widget-content" />
         </div>
-            <div class="meme">kkkkk</div>
+    </div>
+    <div class="meme" id="dragMe">
+        <div id="draggable" class="drag"></div>
+        <div id="drag1" class="drag"></div>
+        <div id="drag2" class="drag"></div>
+        <div id="drag3" class="drag"></div>
+        <div id="drag4" class="drag"></div>
     </div>
 </div>
 </body>
