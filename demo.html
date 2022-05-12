@@ -100,11 +100,69 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
     <script>
+
+        // function ratio(w, h) {
+        //     function mdc(w, h) {
+        //         var resto;
+        //         do {
+        //             resto = w % h;
+        //
+        //             w = h;
+        //             h = resto;
+        //
+        //         } while (resto != 0);
+        //
+        //         return w;
+        //     }
+        //
+        //     var mdc = mdc(w, h);
+        //
+        //
+        //     var width = w/mdc;
+        //     var height = h/mdc;
+        //
+        //     console.log(width + ':' + height);
+        // }
+
+        /* the binary Great Common Divisor calculator */
+        function gcd (u, v) {
+            if (u === v) return u;
+            if (u === 0) return v;
+            if (v === 0) return u;
+
+            if (~u & 1)
+                if (v & 1)
+                    return gcd(u >> 1, v);
+                else
+                    return gcd(u >> 1, v >> 1) << 1;
+
+            if (~v & 1) return gcd(u, v >> 1);
+
+            if (u > v) return gcd((u - v) >> 1, v);
+
+            return gcd((v - u) >> 1, u);
+        }
+
+        /* returns an array with the ratio */
+        function ratio (w, h) {
+            var d = gcd(w,h);
+            return [w/d, h/d];
+        }
+
         var loadFile = function(event) {
             var image = document.getElementById('output');
             image.src = URL.createObjectURL(event.target.files[0]);
-            console.log('files', event.target.files[0])
+            image.onload = function() {
+                console.log(image.naturalWidth);
+                console.log(image.naturalHeight);
+                var r1 = ratio(image.naturalWidth, image.naturalHeight);
+                console.log(r1[0])
+                console.log(r1[1])
+                document.getElementById("doorMe").style.aspectRatio = `${r1[0]}/${r1[1]}`
+                // document.getElementById("output").style.aspectRatio = `${r1[0]}/${r1[1]}`
+            };
         }
+
         var currentParent;
         $( function() {
             $(".drag").draggable({
